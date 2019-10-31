@@ -1,7 +1,6 @@
 // WebGL2 - Scene Graph - Solar System
 // from https://webgl2fundamentals.org/webgl/webgl-scene-graph-solar-system.html
 
-
   "use strict";
 
 var vs = `#version 300 es
@@ -121,7 +120,7 @@ function main() {
   earthOrbitNode.localMatrix = m4.translation(64, 0, 0);  // earth orbit 100 units from the sun
   
   var moonOrbitNode = new Node();
-  moonOrbitNode.localMatrix = m4.translation(5, 0, 0);  // moon 20 units from the earth
+  moonOrbitNode.localMatrix = m4.translation(1, 0, 0);  // moon 20 units from the earth
 
   var marsOrbitNode = new Node();
   marsOrbitNode.localMatrix = m4.translation(98, 0, 0);  // sun a the center
@@ -187,7 +186,7 @@ function main() {
   };
 
   var moonNode = new Node();
-  moonNode.localMatrix = m4.scale(moonNode.localMatrix, 0.05, 0.05, 0.05);
+  moonNode.localMatrix = m4.scale(moonNode.localMatrix, 0.005, 0.005, 0.005);
   moonNode.drawInfo = {
     uniforms: {
       u_colorOffset: [0.5, 0.5, 0.5, 1],  // gray
@@ -315,7 +314,7 @@ function main() {
     time *= 0.001;
 
     twgl.resizeCanvasToDisplaySize(gl.canvas);
-
+    
     // Tell WebGL how to convert from clip space to pixels
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
@@ -394,6 +393,8 @@ function main() {
 
     requestAnimationFrame(drawScene);
   }
+
 }
+
 
 main();
