@@ -85,6 +85,10 @@ function main() {
   if (!gl) {
     return;
   }
+  
+
+  window.addEventListener( "keydown", doKeyDown, true); // função que captura uma tecla pressionada na janela
+  var k = 0.01 //
 
   // Tell the twgl to match position with a_position, n
   // normal with a_normal etc..
@@ -314,7 +318,7 @@ function main() {
     time *= 0.001;
 
     twgl.resizeCanvasToDisplaySize(gl.canvas);
-    
+      
     // Tell WebGL how to convert from clip space to pixels
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
@@ -340,6 +344,7 @@ function main() {
     var viewMatrix = m4.inverse(cameraMatrix);
 
     var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
 
     // update the local matrices for each object.
     
@@ -396,5 +401,14 @@ function main() {
 
 }
 
+// 37 seta esquerda
+// 39 seta direita
+// 38 seta para cima
+// 40 seta para baixo
+function doKeyDown(e) {
+
+alert( e.keyCode )
+
+}
 
 main();
