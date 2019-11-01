@@ -76,6 +76,10 @@ Node.prototype.updateWorldMatrix = function(matrix) {
 };
 
 
+var k = 1; //velocidade da orbita
+var s = -1; //escala
+var std = 1;
+var cameraPosition = [0, -200, 300];
 
 function main() {
   // Get A WebGL context
@@ -84,12 +88,12 @@ function main() {
   var gl = canvas.getContext("webgl2");
   if (!gl) {
     return;
-  }
+  }  
   
 
+  alert("1= orbita padrao\n2 = acelera a orbita\n3 = escala padrao\n4 = aumenta a escala\nleft right = eixo(x) camera\nup down = eixo(y) camera\nz e x = eixo(z) camera");
+  
   window.addEventListener( "keydown", doKeyDown, true); // função que captura uma tecla pressionada na janela
-  var k = 0.01 //
-
   // Tell the twgl to match position with a_position, n
   // normal with a_normal etc..
   twgl.setAttributePrefix("a_");
@@ -226,7 +230,7 @@ function main() {
   };
 
   var saturnNode = new Node();
-  saturnNode.localMatrix = m4.scale(saturnNode.localMatrix, 0.18, 0.18, 0.18);
+  saturnNode.localMatrix = m4.scale(saturnNode.localMatrix, (0.18), (0.18), (0.18));
   saturnNode.drawInfo = {
     uniforms: {
       u_colorOffset: [0.5, 0.2, 0.5, 1], // yellow
@@ -238,7 +242,7 @@ function main() {
   };
 
   var uranusNode = new Node();
-  uranusNode.localMatrix = m4.scale(uranusNode.localMatrix, 0.16, 0.16, 0.16);
+  uranusNode.localMatrix = m4.scale(uranusNode.localMatrix, (0.16), (0.16), (0.16));
   uranusNode.drawInfo = {
     uniforms: {
       u_colorOffset: [0.1, 0.1, 0.6, 1], // yellow
@@ -335,7 +339,7 @@ function main() {
         m4.perspective(fieldOfViewRadians, aspect, 1, 2000);
 
     // Compute the camera's matrix using look at.
-    var cameraPosition = [0, -200, 300];
+    //var cameraPosition = [0, -200, 300];
     var target = [0, 0, 0];
     var up = [0, 0, -1];
     var cameraMatrix = m4.lookAt(cameraPosition, target, up);
@@ -349,15 +353,15 @@ function main() {
     // update the local matrices for each object.
     
     //rotação entorno do SOL (anos)
-    m4.multiply(m4.yRotation((1 / 87.97)), mercuryOrbitNode.localMatrix, mercuryOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 224.7), venusOrbitNode.localMatrix, venusOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 365.26), earthOrbitNode.localMatrix, earthOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 686.2), moonOrbitNode.localMatrix , moonOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 4328.9), marsOrbitNode.localMatrix , marsOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 10752.9), jupyterOrbitNode.localMatrix , jupyterOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 30000.0), saturnOrbitNode.localMatrix , saturnOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 60148.35), uranusOrbitNode.localMatrix , uranusOrbitNode.localMatrix);
-    m4.multiply(m4.yRotation(1 / 90735.35), neptuneOrbitNode.localMatrix , neptuneOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation((k / 87.97)), mercuryOrbitNode.localMatrix, mercuryOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 224.7), venusOrbitNode.localMatrix, venusOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 365.26), earthOrbitNode.localMatrix, earthOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 686.2), moonOrbitNode.localMatrix , moonOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 4328.9), marsOrbitNode.localMatrix , marsOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 10752.9), jupyterOrbitNode.localMatrix , jupyterOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 30000.0), saturnOrbitNode.localMatrix , saturnOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 60148.35), uranusOrbitNode.localMatrix , uranusOrbitNode.localMatrix);
+    m4.multiply(m4.yRotation(k / 90735.35), neptuneOrbitNode.localMatrix , neptuneOrbitNode.localMatrix);
     
     //rotação entorno dele mesmo (dias)
     m4.multiply(m4.yRotation(0.01), mercuryNode.localMatrix, mercuryNode.localMatrix);
@@ -384,6 +388,29 @@ function main() {
     Pluto     6.39 days           248.59  years
     */
 
+    //
+    if(s == 5){
+      objects.forEach(function(object) {
+        if(object != sunNode){
+          object.localMatrix = m4.scale(object.localMatrix, s, s, s);
+        }
+      });
+      
+      std += 5; 
+      s = -1;
+    }
+
+    if(s == 1){
+      objects.forEach(function(object) {
+        if(object != sunNode){
+          object.localMatrix = m4.scale(object.localMatrix, 1/std, 1/std, 1/std);
+        }
+      }); 
+      std = 1;
+      s = -1;
+    }
+    
+
     // Update all world matrices in the scene graph
     solarSystemNode.updateWorldMatrix();
 
@@ -395,8 +422,8 @@ function main() {
     // ------ Draw the objects --------
 
     twgl.drawObjectList(gl, objectsToDraw);
-
     requestAnimationFrame(drawScene);
+
   }
 
 }
@@ -405,10 +432,49 @@ function main() {
 // 39 seta direita
 // 38 seta para cima
 // 40 seta para baixo
+
+//49 = "1" orbita padrão 
+//50 = "2" acelera a orbita
+//51 = "3" escala padrão
+//52 = "4" aumenta a escala
+
 function doKeyDown(e) {
-
-alert( e.keyCode )
-
+  //alert( e.keyCode )
+  if(e.keyCode == 49){
+    alert("Orbita definida para default");
+    k = 1;
+  }
+  if(e.keyCode == 50){
+    alert("Orbita Acelerada 100x");
+    k = 100;
+  }   
+  if(e.keyCode == 51){
+    alert("Escala default");
+    s = 1;
+  }   
+  if(e.keyCode == 52){
+    alert("Escala aumentada 5x");
+    s = 5;
+  } 
+  if(e.keyCode == 37){
+    cameraPosition[0] -= 10;
+  }
+  if(e.keyCode == 39){
+    cameraPosition[0] += 10;
+  } 
+  if(e.keyCode == 38){
+    cameraPosition[1] += 10;
+  } 
+  if(e.keyCode == 40){
+    cameraPosition[1] -= 10;
+  }
+  if(e.keyCode == 90){
+    cameraPosition[2] += 10;
+  }
+  if(e.keyCode == 88){
+    cameraPosition[2] -= 10;
+  }
+  
 }
 
 main();
