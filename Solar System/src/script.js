@@ -80,6 +80,7 @@ var k = 1; //velocidade da orbita
 var s = -1; //escala
 var std = 1;
 var cameraPosition = [0, -200, 300];
+var target = [0, 0, 0];
 
 function main() {
   // Get A WebGL context
@@ -99,11 +100,18 @@ function main() {
   twgl.setAttributePrefix("a_");
 
   var sphereBufferInfo = flattenedPrimitives.createSphereBufferInfo(gl, 10, 12, 6);
+  //orbitas
+  var torusBufferInfo = flattenedPrimitives.createTorusBufferInfo(gl, 30,8,50,25);
+  var torusLineBufferInfo = flattenedPrimitives.createTorusBufferInfo(gl, 200,0.08,50,25);
 
   // setup GLSL program
   var programInfo = twgl.createProgramInfo(gl, [vs, fs]);
 
   var sphereVAO = twgl.createVAOFromBufferInfo(gl, programInfo, sphereBufferInfo);
+  //orbitas
+  var torusVAO = twgl.createVAOFromBufferInfo(gl, programInfo, torusBufferInfo);
+  var torusLineVAO = twgl.createVAOFromBufferInfo(gl, programInfo, torusLineBufferInfo);
+  
 
   function degToRad(d) {
     return d * Math.PI / 180;
@@ -264,7 +272,121 @@ function main() {
     bufferInfo: sphereBufferInfo,
     vertexArray: sphereVAO,
   };
+////////////////////////////////////////////
+////////////////////////desenho das orbitas
+///////////////////////////////////////////
 
+    var mercuryLineNode = new Node();
+
+    // make the earth twice as large
+    mercuryLineNode.localMatrix = m4.scaling(0.125, 0.125, 0.125);   // make the earth twice as large
+    mercuryLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
+ 	
+ 	var venusLineNode = new Node();
+
+    // make the earth twice as large
+    venusLineNode.localMatrix = m4.scaling(0.23, 0.23, 0.23);   // make the earth twice as large
+    venusLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
+
+ 	var earthLineNode = new Node();
+
+    // make the earth twice as large
+    earthLineNode.localMatrix = m4.scaling(0.32, 0.32, 0.32);   // make the earth twice as large
+    earthLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
+
+ 	var marsLineNode = new Node();
+
+    // make the earth twice as large
+    marsLineNode.localMatrix = m4.scaling(0.491, 0.491, 0.491);   // make the earth twice as large
+    marsLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
+
+ 	var jupyterLineNode = new Node();
+
+    // make the earth twice as large
+    jupyterLineNode.localMatrix = m4.scaling(1.675, 1.675, 1.675);   // make the earth twice as large
+    jupyterLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
+
+ 	var saturnLineNode = new Node();
+
+    // make the earth twice as large
+    saturnLineNode.localMatrix = m4.scaling(3.09, 3.09, 3.09);   // make the earth twice as large
+    saturnLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
+
+ 	var uranusLineNode = new Node();
+
+    // make the earth twice as large
+    uranusLineNode.localMatrix = m4.scaling(6.185, 6.185, 6.185);   // make the earth twice as large
+    uranusLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
+
+ 	var neptuneLineNode = new Node();
+
+    // make the earth twice as large
+    neptuneLineNode.localMatrix = m4.scaling(9.685, 9.685, 9.685);   // make the earth twice as large
+    neptuneLineNode.drawInfo = {
+      uniforms: {
+        u_colorOffset: [0, 0, 0, 0],  // blue-green
+        u_colorMult:   [0, 0, 0, 0],
+      },
+      programInfo: programInfo,
+      bufferInfo: torusLineBufferInfo,
+      vertexArray: torusLineVAO,
+ 	};
 
   // connect the celetial objects
   mercuryOrbitNode.setParent(solarSystemNode);
@@ -289,6 +411,15 @@ function main() {
   uranusNode.setParent(uranusOrbitNode);
   neptuneNode.setParent(neptuneOrbitNode);
 
+  mercuryLineNode.setParent(solarSystemNode);
+  venusLineNode.setParent(solarSystemNode);
+  earthLineNode.setParent(solarSystemNode);
+  marsLineNode.setParent(solarSystemNode);
+  jupyterLineNode.setParent(solarSystemNode);
+  saturnLineNode.setParent(solarSystemNode);
+  uranusLineNode.setParent(solarSystemNode);
+  neptuneLineNode.setParent(solarSystemNode);
+
   var objects = [
     sunNode,
     mercuryNode,
@@ -299,7 +430,16 @@ function main() {
     jupyterNode,
     saturnNode,
     uranusNode,
-    neptuneNode
+    neptuneNode,
+    //
+    mercuryLineNode,
+    venusLineNode,
+    earthLineNode,
+    marsLineNode,
+    jupyterLineNode,
+    saturnLineNode,
+    uranusLineNode,
+    neptuneLineNode,
   ];
 
   var objectsToDraw = [
@@ -309,10 +449,20 @@ function main() {
     earthNode.drawInfo,
     moonNode.drawInfo,
     marsNode.drawInfo,
+    marsLineNode.drawInfo,
     jupyterNode.drawInfo,
     saturnNode.drawInfo,
     uranusNode.drawInfo,
-    neptuneNode.drawInfo
+    neptuneNode.drawInfo,
+     //
+    mercuryLineNode.drawInfo,
+    venusLineNode.drawInfo,
+    earthLineNode.drawInfo,
+    marsLineNode.drawInfo,
+    jupyterLineNode.drawInfo,
+    saturnLineNode.drawInfo,
+    uranusLineNode.drawInfo,
+    neptuneLineNode.drawInfo
   ];
 
   requestAnimationFrame(drawScene);
@@ -336,11 +486,11 @@ function main() {
     // Compute the projection matrix
     var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     var projectionMatrix =
-        m4.perspective(fieldOfViewRadians, aspect, 1, 2000);
+        m4.perspective(fieldOfViewRadians, aspect, 1, 4000);
 
     // Compute the camera's matrix using look at.
     //var cameraPosition = [0, -200, 300];
-    var target = [0, 0, 0];
+    //var target = [0, 0, 0];
     var up = [0, 0, -1];
     var cameraMatrix = m4.lookAt(cameraPosition, target, up);
 
@@ -443,6 +593,10 @@ function doKeyDown(e) {
   if(e.keyCode == 49){
     alert("Orbita definida para default");
     k = 1;
+  }
+   if(e.keyCode == 86){
+    alert("Foco em Venus");
+    target = [jupyterNode.localMatrix[0][0]*100, jupyterNode.localMatrix[0][0]*2, 0]
   }
   if(e.keyCode == 50){
     alert("Orbita Acelerada 100x");
