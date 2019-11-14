@@ -1,0 +1,11 @@
+Jogo: Pong
+
+1) Tela Inicial de seleção dos modos de jogo e tela de fim (contagem da pontuação será incrementada nesta tela)
+
+2) Colisão entre objetos
+
+3) Interface de Pontuação (durante o jogo)
+
+4) Níveis de Dificuldade contra a máquina (na tela de inicio)
+
+5) Ambiente: Música, Fundo, etc.
