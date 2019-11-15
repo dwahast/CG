@@ -1,4 +1,23 @@
-<canvas id="canvas"></canvas>
+<!DOCTYPE html>
+<head>
+    <h1 style="display:none">PONG</h1> 
+
+</head>
+<div id="container" style="display:block">
+    <canvas id=canvas></canvas>
+    <div id="score"></div>
+    
+    <div class=menu>
+        <div id="solo" onclick="singleplayer()">Single-Player</div>
+        <div id="multi" onclick="multiplayer()">Multi-Player</div>        
+    </div>
+    
+    <div class=debug id="speed"></div>
+    <div class=debug id="angle"></div>
+    <div class=debug id="type"></div>
+</div>
+
+
 <!--
 This sample uses TWGL (Tiny WebGL) to hide the clutter.
 Otherwise the sample would be full of code not related to the point of the sample.
