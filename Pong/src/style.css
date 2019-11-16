@@ -28,6 +28,17 @@ canvas {
   position: relative;
 }
 
+#pause {
+  margin-top: 10%;
+  font: bolder;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 40px;
+  z-index: 1;
+  text-align: center;
+  padding: 10px;
+  position: relative;
+}
+
 
 #container #score {
   width:100%px;
@@ -36,6 +47,48 @@ canvas {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 30px;
   font: bolder;
+}
+
+#pad2{
+  z-index: 2;
+  margin: 1%;
+  bottom: 30%;
+  right: 0;
+  position: fixed;
+}
+
+
+#pad1{
+  z-index: 2;
+  margin: 1%;
+  bottom: 25%;
+  right: 0;
+  position: fixed;
+}
+
+#running{
+  z-index: 2;
+  margin: 1%;
+  bottom: 20%;
+  right: 0;
+  position: fixed;
+}
+
+#paused{
+  z-index: 2;
+  margin: 1%;
+  bottom: 15%;
+  right: 0;
+  position: fixed;
+}
+
+#savedspeed {
+  z-index: 2;
+  margin: 1%;
+  bottom: 35%;
+  right: 0;
+  position: fixed;
+
 }
 
 #speed{
@@ -61,6 +114,7 @@ canvas {
   right: 0;
   position: fixed;
 }
+
 #container canvas {
   position: absolute;
 }

@@ -6,13 +6,19 @@
 <div id="container" style="display:block">
     <canvas id=canvas></canvas>
     <div id="score"></div>
-    
+
     <div class=menu>
         <div id="solo" onclick="singleplayer()">Single-Player</div>
-        <div id="multi" onclick="multiplayer()">Multi-Player</div>        
+        <div id="multi" onclick="multiplayer()">Multi-Player</div>            
     </div>
-    
+
+    <div class="status" id="pause" style="display: none">Paused</div>
+    <div class=debug id="pad1"></div>
+    <div class=debug id="pad2"></div>
+    <div class=debug id="running"></div>
+    <div class=debug id="paused"></div>
     <div class=debug id="speed"></div>
+    <div class=debug id="savedspeed"></div>
     <div class=debug id="angle"></div>
     <div class=debug id="type"></div>
 </div>

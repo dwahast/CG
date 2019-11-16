@@ -42,13 +42,16 @@ void main() {
 }
 `;
 
+var translationP1 = [-830, -75, -720];
+var translationP2 = [800, -75, -720];
+
 var p1MoveUp = false;
 var p1MoveDown = false;
 
 var p2MoveUp = false;
 var p2MoveDown = false;
 
-var playerSpeed = 500;
+var playerSpeed = 700;
 var ballSpeed = 0;
 let keysPressed = {};
 
@@ -56,8 +59,15 @@ var player1score = 0;
 var player2score = 0;
 var randomStart = ['DIR','ESQ']
 var solo = false;
-var dificult = [0,200,400]
+var dificult = [-300,-200,-100]
 var limite = 5;
+var incrementBallSpeed = 25;
+var paused = false;
+var savedBallSpeed;
+var savedPlayerSpeed;
+var running = false;
+var ballPosition = [0,0,-720];
+var baseSpeed = 700;
 
 document.addEventListener('keydown', (event) => {
   keysPressed[event.key] = true;
@@ -82,14 +92,11 @@ function main() {
   // Use our boilerplate utils to compile the shaders and link into a program
   var program = webglUtils.createProgramFromSources(gl,
       [vertexShaderSource, fragmentShaderSource]);
-    
   // look up where the vertex data needs to go.
   var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
   var colorAttributeLocation = gl.getAttribLocation(program, "a_color");
-
   // look up uniform locations
   var matrixLocation = gl.getUniformLocation(program, "u_matrix");
-
   // Create a buffer
   var positionBuffer = gl.createBuffer();
 
@@ -175,13 +182,12 @@ function main() {
 
   // First let's make some variables
   // to hold the translation
-  var translationP1 = [-700, -75, -720];
-  var translationP2 = [700, -75, -720];
-  var ballPosition = [0,0,-720]
+  ballPosition = [0,0,-720]
   var diagonal = 0;
   var rotation = [0, 0, 0];
   var scale = [1, 1, 1];
   var fieldOfViewRadians = degToRad(60);
+  var ballRotation = [0,0,0];
 
   function computeDrawMatrix(viewProjectionMatrix, translation, rotation, scale, v) {
     gl.bindVertexArray(v);
@@ -207,6 +213,7 @@ function main() {
 
   var then = 0;
   var dir = randomStart[Math.round(Math.random())];
+
   requestAnimationFrame(drawScene);
 
   // Draw the scene.
@@ -241,8 +248,29 @@ function main() {
     gl.enable(gl.CULL_FACE);
     // Tell it to use our program (pair of shaders)
     gl.useProgram(program);
-
-    //Comandos Jogadores
+    
+    if(keysPressed[' '] == true && running){
+      if(paused == false){
+          savedBallSpeed = ballSpeed;
+          savedPlayerSpeed = playerSpeed;
+          playerSpeed = 0;
+          ballSpeed = 0;
+          paused = true;
+          document.getElementById('pause').style.display = 'block';
+          document.getElementById('solo').style.display = 'block';
+          document.getElementById('multi').style.display = 'block';
+      }else{
+          ballSpeed = savedBallSpeed;
+          playerSpeed = savedPlayerSpeed;
+          paused = false;
+          document.getElementById('pause').style.display = 'none';
+          document.getElementById('solo').style.display = 'none';
+          document.getElementById('multi').style.display = 'none';
+      }
+      keysPressed[' '] = false;
+    }
+      
+    //Comandos de movimentação Jogadores
     if(keysPressed['w']){
       if(translationP1[1] + 150 <= canvas.height - 220){
         translationP1[1] += playerSpeed * deltaTime;
@@ -253,31 +281,31 @@ function main() {
         translationP1[1] -= playerSpeed * deltaTime;
       }  
     }
-    
-    if(keysPressed['ArrowUp']){
+    if(keysPressed['p']){
       if(translationP2[1] + 150 <= canvas.height - 220){
         translationP2[1] += playerSpeed * deltaTime;
       }
     } 
-    if(keysPressed['ArrowDown']){
+    if(keysPressed['l']){
       if(translationP2[1] >= -canvas.height + 220){
         translationP2[1] -= playerSpeed * deltaTime;
       }
     } 
-    
+
+    //Verificação de hit
     if(dir == 'ESQ'){
-      if(ballPosition[0] <= (translationP1[0] + 30)){//limite hit
-        if( translationP1[1] > (ballPosition[1]+30) || (translationP1[1]+150) < ballPosition[1]){
+      if(ballPosition[0] <= (translationP1[0] + 15)){//limite hit
+        if( translationP1[1] > (ballPosition[1]+40) || (translationP1[1]+160) < ballPosition[1]){
           //alert("ERROU")
             player2score += 1;
             ballPosition = [0,0,-720];
             dir = randomStart[Math.round(Math.random())];
-            ballSpeed = 500;
+            ballSpeed = baseSpeed;
             diagonal = 0;
         }else{
           //alert("Acertou")
           dir = 'DIR'    
-          ballSpeed += 15;
+          ballSpeed += incrementBallSpeed;
           if(ballPosition[1] + 30 <= translationP1[1] + 101){//bate na parte inferior
             diagonal = (translationP1[1]+100 - ballPosition[1]); 
           }else{
@@ -297,22 +325,22 @@ function main() {
     }
     
     if(dir == 'DIR'){
-      if(ballPosition[0] >= (translationP2[0] - 30)){//limite hit
-        if( translationP2[1] > (ballPosition[1]+30) || (translationP2[1]+150) < ballPosition[1]){
+      if(ballPosition[0] >= (translationP2[0] - 15)){//limite hit
+        if( translationP2[1] > (ballPosition[1]+35) || (translationP2[1]+ 155) < ballPosition[1]){
           //alert("ERROU")
           player1score += 1;
           ballPosition = [0,0,-720];
           dir = randomStart[Math.round(Math.random())];
-          ballSpeed = 500;
+          ballSpeed = baseSpeed;
           diagonal = 0;
         }else{
           //alert("Acertou")
           dir = 'ESQ'    
-          ballSpeed += 15;
-          if(ballPosition[1] + 30 <= translationP2[1] + 91){//bate na parte inferior
+          ballSpeed += incrementBallSpeed;
+          if(ballPosition[1] + 30 <= translationP2[1] + 101){//bate na parte inferior
             diagonal = (translationP2[1]+100 - ballPosition[1]); 
           }else{
-            if(ballPosition[1] - 30 >= translationP2[1] + 60){//bate na parte superior
+            if(ballPosition[1] - 30 >= translationP2[1] + 50){//bate na parte superior
               diagonal = -1*(ballPosition[1] - translationP2[1]); 
             }else{
               diagonal = 0;
@@ -326,15 +354,19 @@ function main() {
         ballPosition[1] += diagonal * deltaTime * (ballSpeed*0.003);
       }
     }
-
-    if(solo){
+    //IA
+    if(solo && !paused && running){
       if(translationP2[1]+75 <= ballPosition[1]+15){
-        translationP2[1] += (playerSpeed + dificult[2]) * deltaTime;
+        if(translationP2[1] + 150 <= canvas.height - 220){
+          translationP2[1] += (playerSpeed + dificult[0]) * deltaTime;
+        }
       }else{
-        translationP2[1] -= (playerSpeed + dificult[2]) * deltaTime;
+        if(translationP2[1] >= -canvas.height + 220){
+          translationP2[1] -= (playerSpeed + dificult[0]) * deltaTime;
+        }
       }
     }
-
+    //limite de pontuação
     if(player1score >= limite){
       alert("Player 1 Venceu!!!");
       player1score = 0;
@@ -342,6 +374,7 @@ function main() {
       ballSpeed = 0;
       ballPosition [0,0, -720]
       solo = false;
+      running = false;
       document.getElementById('solo').style.display = 'block';
       document.getElementById('multi').style.display = 'block';
     }
@@ -352,17 +385,29 @@ function main() {
       ballSpeed = 0;
       ballPosition [0,0, -720]
       solo = false;
+      running = false;
       document.getElementById('solo').style.display = 'block';
       document.getElementById('multi').style.display = 'block';
       
     }
+
+    //SCORE
     document.getElementById('score').innerHTML = player1score + ' X ' + player2score;
-    document.getElementById('speed').innerHTML = "Speed: " + ballSpeed
-    document.getElementById('angle').innerHTML = "Angle:" + diagonal
-    document.getElementById('type').innerHTML = "AI: " + solo
+    
+    //screen debug
+    document.getElementById('running').innerHTML = "running:" + running;
+    document.getElementById('paused').innerHTML = "paused:" + paused;
+    document.getElementById('speed').innerHTML = "Speed: " + ballSpeed;
+    document.getElementById('savedspeed').innerHTML = "SaveSpeed: " + playerSpeed;
+    document.getElementById('angle').innerHTML = "Angle:" + diagonal;
+    document.getElementById('type').innerHTML = "AI: " + solo;
+    document.getElementById('pad1').innerHTML = "Pad 1 Pos:" + translationP1[1];
+    document.getElementById('pad2').innerHTML = "Pad 2 Pos:" + translationP2[1];
+
     computeDrawMatrix(viewProjectionMatrix, translationP1, rotation, scale, padsVAO)
     computeDrawMatrix(viewProjectionMatrix, translationP2, rotation, scale, padsVAO)
-    computeDrawMatrix(viewProjectionMatrix, ballPosition, rotation, scale, ballVAO)
+    computeDrawMatrix(viewProjectionMatrix, ballPosition, ballRotation, [0.9,0.7,0.5], ballVAO)
+    
     // Call drawScene again next frame
     requestAnimationFrame(drawScene);
   }
@@ -621,15 +666,42 @@ function setColorsBall(gl) {
       gl.STATIC_DRAW);
 }
 function singleplayer(){
-  solo = true;
-  ballSpeed = 500;
   document.getElementById('solo').style.display = 'none';
   document.getElementById('multi').style.display = 'none';
+  document.getElementById('pause').style.display = 'none';
+  ballSpeed = baseSpeed;
+  if(solo && running){
+    keysPressed[' '] = true;
+  }else{
+    running = true;
+    solo = true;
+    paused = false;
+    playerSpeed = baseSpeed;
+    ballPosition = [0,0,-720];
+    player1score = 0;
+    player2score = 0;
+    translationP1[1] = -75;
+    translationP2[1] = -75;
+  }
 }
 function multiplayer(){
-  solo = false;
-  ballSpeed = 500;
   document.getElementById('solo').style.display = 'none';
   document.getElementById('multi').style.display = 'none';
+  document.getElementById('pause').style.display = 'none';
+  ballSpeed = baseSpeed;
+  if(!solo && running){
+    keysPressed[' '] = true;
+  }else{
+    running = true
+    solo = false;
+    paused = false;
+    playerSpeed = ballSpeed;
+    ballPosition = [0,0,-720];
+    player1score = 0;
+    player2score = 0;
+    translationP1[1] = -75;
+    translationP2[1] = -75;
+  } 
 }
+
 main();
