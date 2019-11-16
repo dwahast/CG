@@ -69,10 +69,12 @@ var running = false;
 var ballPosition = [0,0,-720];
 var baseSpeed = 700;
 var music = true;
+var debug = true;
 
 var mySound = new sound("solid.wav");
 var myMusic = new sound("bites.mp3");
-
+// var background = new Image();
+// background.src = "background.png";
 
 document.addEventListener('keydown', (event) => {
   keysPressed[event.key] = true;
@@ -93,7 +95,10 @@ function main() {
   if (!gl) {
     return;
   }
-
+  
+  // background.onload = function(){
+  //   gl.drawImage(background,0,0);   
+  // }
 
   // Use our boilerplate utils to compile the shaders and link into a program
   var program = webglUtils.createProgramFromSources(gl,
@@ -219,7 +224,7 @@ function main() {
 
   var then = 0;
   var dir = randomStart[Math.round(Math.random())];
-
+  debugOnOff();
   requestAnimationFrame(drawScene);
 
   // Draw the scene.
@@ -229,7 +234,7 @@ function main() {
     then = now;
     
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-    
+  
     ///// CAMERA
     var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, 1, 2000);
@@ -415,14 +420,14 @@ function main() {
     
     //screen debug
     document.getElementById('musicStatus').innerHTML = "Music:" + music;
-    document.getElementById('running').innerHTML = "running:" + running;
-    document.getElementById('paused').innerHTML = "paused:" + paused;
-    document.getElementById('speed').innerHTML = "Speed: " + ballSpeed;
-    document.getElementById('savedspeed').innerHTML = "SaveSpeed: " + playerSpeed;
-    document.getElementById('angle').innerHTML = "Angle:" + diagonal;
-    document.getElementById('type').innerHTML = "AI: " + solo;
-    document.getElementById('pad1').innerHTML = "Pad 1 Pos:" + translationP1[1];
-    document.getElementById('pad2').innerHTML = "Pad 2 Pos:" + translationP2[1];
+    document.getElementById('running').innerHTML = "Game Running:" + running;
+    document.getElementById('paused').innerHTML = "Paused:" + paused;
+    document.getElementById('speed').innerHTML = "Ball Speed: " + ballSpeed;
+    document.getElementById('savedspeed').innerHTML = "Players Speed:" + playerSpeed;
+    document.getElementById('angle').innerHTML = "Movement Angle:" + Math.round(diagonal);
+    document.getElementById('type').innerHTML = "Single-Player: " + solo;
+    document.getElementById('pad1').innerHTML = "Pad 1 Pos:" + Math.round(translationP1[1]);
+    document.getElementById('pad2').innerHTML = "Pad 2 Pos:" + Math.round(translationP2[1]);
 
     computeDrawMatrix(viewProjectionMatrix, translationP1, rotation, scale, padsVAO)
     computeDrawMatrix(viewProjectionMatrix, translationP2, rotation, scale, padsVAO)
@@ -731,9 +736,11 @@ function sound(src) {
   this.sound.setAttribute("controls", "none");
   this.sound.style.display = "none";
   document.body.appendChild(this.sound);
+
   this.play = function(){
     this.sound.play();
   }
+
   this.stop = function(){
     this.sound.pause();
   }
@@ -745,6 +752,27 @@ function musicOnOff() {
   }else{
     music = true;
   }
+}
+
+function debugOnOff() {
+
+  var arrayOfElements = document.getElementsByClassName('debug');
+  var lengthOfArray = arrayOfElements.length;
+  if(debug){
+    debug = false;
+  }else{
+    debug = true;
+  }
+
+  if(!debug){
+    for (var i=0; i<lengthOfArray;i++){
+      arrayOfElements[i].style.display='none';
+    }
+  }else{
+    for (var i=0; i<lengthOfArray;i++){
+      arrayOfElements[i].style.display='block';
+    }
+  }  
 }
 
 main();

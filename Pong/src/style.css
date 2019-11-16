@@ -13,6 +13,7 @@ canvas {
   height: 100vh;
   margin: 0%;
   display: block;
+  background: url("background.jpg")
 }
 
 #container .menu div {
@@ -23,9 +24,11 @@ canvas {
   z-index: 1;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 100%;
+  top: 30px;
   background: transparent;
   text-align: center;
   position: relative;
+  color: cornsilk;
 }
 
 #pause {
@@ -43,25 +46,33 @@ canvas {
 #container #score {
   width:100%px;
   height:10%;
+  z-index: 1;
   text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 30px;
   font: bolder;
+  left: 46.8%;
+  position: fixed;
+  color: cornsilk;
 }
 
 #pad2{
   z-index: 2;
   margin: 1%;
-  bottom: 30%;
+  bottom: 5%;
   right: 0;
   position: fixed;
+}
+
+.debug{
+  color: cornsilk;
 }
 
 
 #pad1{
   z-index: 2;
   margin: 1%;
-  bottom: 25%;
+  bottom: 0%;
   right: 0;
   position: fixed;
 }
@@ -69,23 +80,43 @@ canvas {
 #running{
   z-index: 2;
   margin: 1%;
-  bottom: 20%;
+  bottom: 30%;
   right: 0;
   position: fixed;
+}
+
+#debugButton{
+  z-index: 2;
+  margin: 1%;
+  left: 0%;
+  top: 0%;
+  position: fixed;
+  display: block;
+  color: cornsilk;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 10px;
+  font: bolder;
 }
 
 #paused{
   z-index: 2;
   margin: 1%;
-  bottom: 15%;
+  bottom: 35%;
   right: 0;
   position: fixed;
+}
+
+#pause{
+  color: cornsilk;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 30px;
+  font: bolder;
 }
 
 #savedspeed {
   z-index: 2;
   margin: 1%;
-  bottom: 35%;
+  bottom: 10%;
   right: 0;
   position: fixed;
 
@@ -104,12 +135,16 @@ canvas {
   left: 0;
   position: fixed;
   display: block;
+  color: cornsilk;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 30px;
+  font: bolder;
 }
 
 #speed{
   z-index: 2;
   margin: 1%;
-  bottom: 10%;
+  bottom: 15%;
   right: 0;
   position: fixed;
 }
@@ -117,7 +152,7 @@ canvas {
 #angle{
   z-index: 2;
   margin: 1%;
-  bottom: 5%;
+  bottom: 20%;
   right: 0;
   position: fixed;
 }
@@ -125,7 +160,7 @@ canvas {
 #type{
   z-index: 2;
   margin: 1%;
-  bottom: 0;
+  bottom: 25%;
   right: 0;
   position: fixed;
 }
@@ -135,5 +170,5 @@ canvas {
 }
 
 .debug {
-  display: block;
+  display: none;
 }
