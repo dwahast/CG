@@ -18,8 +18,8 @@ canvas {
 
 #container .menu div {
   /* margin: 0%; */
-  width: 15%;
-  left: 42%;
+  width: 10%;
+  left: 44.5%;
   padding: 5px;
   z-index: 1;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -109,8 +109,9 @@ canvas {
 #pause{
   color: cornsilk;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 30px;
+  font-size: 80px;
   font: bolder;
+  position: absolute;
 }
 
 #savedspeed {
@@ -140,6 +141,18 @@ canvas {
   font-size: 30px;
   font: bolder;
 }
+#init{
+  z-index: 1;
+  margin: 1%;
+  right: 0%;
+  top: 0%;
+  position: fixed;
+  display: block;
+  color: cornsilk;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 10px;
+  font: bolder;
+}
 
 #speed{
   z-index: 2;
@@ -147,6 +160,19 @@ canvas {
   bottom: 15%;
   right: 0;
   position: fixed;
+}
+
+#levelBoard {
+  z-index: 2;
+  margin: 1%;
+  bottom: 0%;
+  right: 1%;
+  position: fixed;
+  display: block;
+  color: cornsilk;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 15px;
+  font: bold;
 }
 
 #angle{
@@ -167,6 +193,27 @@ canvas {
 
 #container canvas {
   position: absolute;
+}
+
+.level {
+  z-index: 1;
+  
+  margin: 1%;
+  left: 46.3%;
+  top: 120px;
+  position: fixed;
+
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 100%;
+  text-align: center;
+  background: transparent;
+  color: cornsilk;
+  display: none;
+}
+
+#easy, #medium, #hard {
+  padding: 0.7%;
+
 }
 
 .debug {

@@ -8,11 +8,20 @@
     <div id="score"></div>
     <div id=music onclick="musicOnOff()">Music</div>
     <div id=debugButton onclick="debugOnOff()">debug</div>
+    <div id=levelBoard></div>
+    <div id=init onclick="inite()">init</div>
 
     <div class=menu>
         <div id="solo" onclick="singleplayer()">Single-Player</div>
-        <div id="multi" onclick="multiplayer()">Multi-Player</div>            
+        <div id="multi" onclick="multiplayer()">Multi-Player</div>
     </div>
+
+    <div class="level">
+        <div id="easy" onclick="easyMode()">Easy</div>
+        <div id="medium" onclick="mediumMode()">Medium</div>
+        <div id="hard" onclick="hardMode()">Hard</div>
+    </div>
+        
 
     <div class="status" id="pause" style="display: none">Paused</div>
     <div class=debug id="musicStatus"></div>

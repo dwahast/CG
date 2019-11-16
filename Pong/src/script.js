@@ -60,16 +60,18 @@ var player2score = 0;
 var randomStart = ['DIR','ESQ']
 var solo = false;
 var dificult = [-400,-300,0]
-var limite = 5;
+var level = -1;
+var limite = 2;
 var incrementBallSpeed = 25;
 var paused = false;
 var savedBallSpeed;
 var savedPlayerSpeed;
 var running = false;
-var ballPosition = [0,0,-720];
+var ballPosition = [-30,0,-720];
 var baseSpeed = 700;
 var music = true;
 var debug = true;
+var init = true;
 
 var mySound = new sound("solid.wav");
 var myMusic = new sound("bites.mp3");
@@ -193,7 +195,7 @@ function main() {
 
   // First let's make some variables
   // to hold the translation
-  ballPosition = [0,0,-720]
+  ballPosition = [-30,0,-720]
   var diagonal = 0;
   var rotation = [0, 0, 0];
   var scale = [1, 1, 1];
@@ -234,7 +236,14 @@ function main() {
     then = now;
     
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-  
+    
+    if(init && !running){
+      document.getElementById('pause').innerHTML = "PONG";
+      document.getElementById('pause').style.left = '40%';
+      document.getElementById('pause').style.display = "block";
+      document.getElementById('levelBoard').innerHTML = "Pong by Douglas.w";
+    }
+
     ///// CAMERA
     var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, 1, 2000);
@@ -268,6 +277,7 @@ function main() {
 
     if(keysPressed[' '] == true && running){
       document.getElementById('pause').innerHTML = "Paused";
+      document.getElementById('pause').style.left = '38%';
       if(paused == false){
           savedBallSpeed = ballSpeed;
           savedPlayerSpeed = playerSpeed;
@@ -342,7 +352,6 @@ function main() {
         ballPosition[1] += diagonal * deltaTime * (ballSpeed*0.003);
       }
     }
-    
     if(dir == 'DIR'){
       if(ballPosition[0] >= (translationP2[0] - 15)){//limite hit
         if( translationP2[1] > (ballPosition[1]+35) || (translationP2[1]+ 155) < ballPosition[1]){
@@ -374,45 +383,64 @@ function main() {
         ballPosition[1] += diagonal * deltaTime * (ballSpeed*0.003);
       }
     }
+
     //IA
     if(solo && !paused && running){
       if(translationP2[1]+75 <= ballPosition[1]+15){
         if(translationP2[1] + 150 <= canvas.height - 220){
-          translationP2[1] += (playerSpeed + dificult[0]) * deltaTime;
+          translationP2[1] += (playerSpeed + dificult[level]) * deltaTime;
         }
       }else{
         if(translationP2[1] >= -canvas.height + 220){
-          translationP2[1] -= (playerSpeed + dificult[0]) * deltaTime;
+          translationP2[1] -= (playerSpeed + dificult[level]) * deltaTime;
         }
       }
     }
+
     //limite de pontuação
     if(player1score >= limite){
       //alert("Player 1 Venceu!!!");
       document.getElementById('pause').innerHTML = "Player 1 Venceu!!!";
+      document.getElementById('pause').style.left = '24%';
       document.getElementById('pause').style.display = "block";
-      player1score = 0;
-      player2score = 0;
       ballSpeed = 0;
-      ballPosition [0,0, -720]
       solo = false;
       running = false;
-      document.getElementById('solo').style.display = 'block';
-      document.getElementById('multi').style.display = 'block';
+      paused = false;
+      init = false;
+      // Usage!
+      sleep(7000).then(() => {
+        // Do something after the sleep!
+        player1score = 0;
+        player2score = 0;
+        ballPosition = [-30,0, -720]
+        translationP1[1] = -75;
+        translationP2[1] = -75;
+        document.getElementById('solo').style.display = 'block';
+        document.getElementById('multi').style.display = 'block';
+      });
     }
     if(player2score >= limite){
-      document.getElementById('pause').innerHTML = "Player 1 Venceu!!!";
+      // Usage!
+      document.getElementById('pause').innerHTML = "Player 2 Venceu!!!";
+      document.getElementById('pause').style.left = '24%';
       document.getElementById('pause').style.display = "block";
-      // alert("Player 2 Venceu!!!");
-      player1score = 0;
-      player2score = 0;
       ballSpeed = 0;
-      ballPosition [0,0, -720]
       solo = false;
       running = false;
-      document.getElementById('solo').style.display = 'block';
-      document.getElementById('multi').style.display = 'block';
-      
+      paused = false;
+      init = false;
+      sleep(7000).then(() => {
+        // Do something after the sleep!
+        // alert("Player 2 Venceu!!!");
+        player1score = 0;
+        player2score = 0;  
+        ballPosition = [-30,0, -720]
+        translationP1[1] = -75;
+        translationP2[1] = -75;
+        document.getElementById('solo').style.display = 'block';
+        document.getElementById('multi').style.display = 'block';
+      });
     }
 
     //SCORE
@@ -691,41 +719,45 @@ function setColorsBall(gl) {
       gl.STATIC_DRAW);
 }
 function singleplayer(){
-  document.getElementById('solo').style.display = 'none';
-  document.getElementById('multi').style.display = 'none';
-  document.getElementById('pause').style.display = 'none';
-  ballSpeed = baseSpeed;
-  if(solo && running){
-    keysPressed[' '] = true;
+  if(solo){
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    solo = false;
   }else{
-    running = true;
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'block';
+    });
     solo = true;
-    paused = false;
-    playerSpeed = baseSpeed;
-    ballPosition = [0,0,-720];
-    player1score = 0;
-    player2score = 0;
-    translationP1[1] = -75;
-    translationP2[1] = -75;
   }
 }
+  
+
 function multiplayer(){
   document.getElementById('solo').style.display = 'none';
   document.getElementById('multi').style.display = 'none';
   document.getElementById('pause').style.display = 'none';
+  document.querySelectorAll('.level').forEach(function(el) {
+    el.style.display = 'none';
+  });
+  document.getElementById('levelBoard').innerHTML = "Multiplayer";
   ballSpeed = baseSpeed;
+  
   if(!solo && running){
     keysPressed[' '] = true;
   }else{
-    running = true
+    ballPosition = [-30,0,-720];
+    running = true;
     solo = false;
     paused = false;
     playerSpeed = ballSpeed;
-    ballPosition = [0,0,-720];
     player1score = 0;
     player2score = 0;
     translationP1[1] = -75;
     translationP2[1] = -75;
+    diagonal = 0;
+    level = -1;
+    
   } 
 }
 
@@ -773,6 +805,131 @@ function debugOnOff() {
       arrayOfElements[i].style.display='block';
     }
   }  
+}
+
+function easyMode(){
+
+  if(level == 0 && running){
+    keysPressed[' '] = true;
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.getElementById('solo').style.display = 'none';
+    document.getElementById('multi').style.display = 'none';
+    document.getElementById('pause').style.display = 'none';  
+  }else{
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.getElementById('solo').style.display = 'none';
+    document.getElementById('multi').style.display = 'none';
+    document.getElementById('pause').style.display = 'none';
+    document.getElementById('levelBoard').innerHTML = "Easy";
+    
+    ballPosition = [-30,0,-720];
+    level = 0;
+    ballSpeed = baseSpeed;
+    running = true;
+    paused = false;
+    playerSpeed = baseSpeed;
+    diagonal = 0;
+    player1score = 0;
+    player2score = 0;
+    translationP1[1] = -75;
+    translationP2[1] = -75;
+  }
+
+}
+
+function mediumMode(){
+  if(level == 1 && running){
+    keysPressed[' '] = true;
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.getElementById('solo').style.display = 'none';
+    document.getElementById('multi').style.display = 'none';
+    document.getElementById('pause').style.display = 'none';  
+  }else{
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.getElementById('solo').style.display = 'none';
+    document.getElementById('multi').style.display = 'none';
+    document.getElementById('pause').style.display = 'none';
+    document.getElementById('levelBoard').innerHTML = "Medium";
+
+    ballPosition = [-30,0,-720];
+    level = 1;
+    ballSpeed = baseSpeed + 50;
+    running = true;
+    paused = false;
+    playerSpeed = baseSpeed;
+    diagonal = 0;
+    player1score = 0;
+    player2score = 0;
+    translationP1[1] = -75;
+    translationP2[1] = -75;
+  }
+}
+
+function hardMode(){
+  if(level == 2 && running){
+    keysPressed[' '] = true;
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    document.getElementById('solo').style.display = 'none';
+    document.getElementById('multi').style.display = 'none';
+    document.getElementById('pause').style.display = 'none';  
+  }else{
+    document.querySelectorAll('.level').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    init = false;
+    document.getElementById('solo').style.display = 'none';
+    document.getElementById('multi').style.display = 'none';
+    document.getElementById('pause').style.display = 'none';
+    document.getElementById('levelBoard').innerHTML = "Hard";
+    level = 2;
+    ballPosition = [-30,0,-720];
+    ballSpeed = baseSpeed + 100;
+    running = true;
+    paused = false;
+    playerSpeed = baseSpeed;
+    player1score = 0;
+    player2score = 0;
+    diagonal = 0;
+    translationP1[1] = -75;
+    translationP2[1] = -75;
+  }
+}
+
+function inite(){
+  running = false;
+  init = true;
+  paused = false;
+  ballSpeed = 0;
+  translationP1[1] = -75;
+  translationP2[1] = -75;
+  ballPosition = [-30,0,-720];
+  level = -1;
+  document.querySelectorAll('.level').forEach(function(el) {
+    el.style.display = 'none';
+  });
+  document.getElementById('solo').style.display = 'block';
+  document.getElementById('multi').style.display = 'block';
+
+  document.getElementById('pause').innerHTML = "PONG";
+  
+  document.getElementById('pause').style.left = '40%';
+  document.getElementById('pause').style.display = "block";
+  document.getElementById('levelBoard').innerHTML = "Pong by Douglas.w";
+}
+
+// sleep time expects milliseconds
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 main();
