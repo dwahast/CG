@@ -59,7 +59,7 @@ var player1score = 0;
 var player2score = 0;
 var randomStart = ['DIR','ESQ']
 var solo = false;
-var dificult = [-300,-200,-100]
+var dificult = [-400,-300,0]
 var limite = 5;
 var incrementBallSpeed = 25;
 var paused = false;
@@ -68,6 +68,11 @@ var savedPlayerSpeed;
 var running = false;
 var ballPosition = [0,0,-720];
 var baseSpeed = 700;
+var music = true;
+
+var mySound = new sound("solid.wav");
+var myMusic = new sound("bites.mp3");
+
 
 document.addEventListener('keydown', (event) => {
   keysPressed[event.key] = true;
@@ -88,7 +93,8 @@ function main() {
   if (!gl) {
     return;
   }
- 
+
+
   // Use our boilerplate utils to compile the shaders and link into a program
   var program = webglUtils.createProgramFromSources(gl,
       [vertexShaderSource, fragmentShaderSource]);
@@ -221,7 +227,7 @@ function main() {
     now *= 0.001
     var deltaTime = now - then;
     then = now;
-
+    
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     
     ///// CAMERA
@@ -248,8 +254,15 @@ function main() {
     gl.enable(gl.CULL_FACE);
     // Tell it to use our program (pair of shaders)
     gl.useProgram(program);
-    
+
+    if(!paused && music){
+      myMusic.play();
+    }else{
+      myMusic.stop();
+    }
+
     if(keysPressed[' '] == true && running){
+      document.getElementById('pause').innerHTML = "Paused";
       if(paused == false){
           savedBallSpeed = ballSpeed;
           savedPlayerSpeed = playerSpeed;
@@ -304,6 +317,7 @@ function main() {
             diagonal = 0;
         }else{
           //alert("Acertou")
+          mySound.play();
           dir = 'DIR'    
           ballSpeed += incrementBallSpeed;
           if(ballPosition[1] + 30 <= translationP1[1] + 101){//bate na parte inferior
@@ -335,6 +349,7 @@ function main() {
           diagonal = 0;
         }else{
           //alert("Acertou")
+          mySound.play();
           dir = 'ESQ'    
           ballSpeed += incrementBallSpeed;
           if(ballPosition[1] + 30 <= translationP2[1] + 101){//bate na parte inferior
@@ -368,7 +383,9 @@ function main() {
     }
     //limite de pontuação
     if(player1score >= limite){
-      alert("Player 1 Venceu!!!");
+      //alert("Player 1 Venceu!!!");
+      document.getElementById('pause').innerHTML = "Player 1 Venceu!!!";
+      document.getElementById('pause').style.display = "block";
       player1score = 0;
       player2score = 0;
       ballSpeed = 0;
@@ -379,7 +396,9 @@ function main() {
       document.getElementById('multi').style.display = 'block';
     }
     if(player2score >= limite){
-      alert("Player 2 Venceu!!!");
+      document.getElementById('pause').innerHTML = "Player 1 Venceu!!!";
+      document.getElementById('pause').style.display = "block";
+      // alert("Player 2 Venceu!!!");
       player1score = 0;
       player2score = 0;
       ballSpeed = 0;
@@ -395,6 +414,7 @@ function main() {
     document.getElementById('score').innerHTML = player1score + ' X ' + player2score;
     
     //screen debug
+    document.getElementById('musicStatus').innerHTML = "Music:" + music;
     document.getElementById('running').innerHTML = "running:" + running;
     document.getElementById('paused').innerHTML = "paused:" + paused;
     document.getElementById('speed').innerHTML = "Speed: " + ballSpeed;
@@ -702,6 +722,29 @@ function multiplayer(){
     translationP1[1] = -75;
     translationP2[1] = -75;
   } 
+}
+
+function sound(src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
+}
+
+function musicOnOff() {
+  if(music){
+    music = false;
+  }else{
+    music = true;
+  }
 }
 
 main();
