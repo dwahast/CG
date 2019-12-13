@@ -241,7 +241,7 @@ function main() {
       document.getElementById('pause').innerHTML = "PONG";
       document.getElementById('pause').style.left = '40%';
       document.getElementById('pause').style.display = "block";
-      document.getElementById('levelBoard').innerHTML = "Pong by Douglas.w";
+      document.getElementById('levelBoard').innerHTML = "Pong by Douglas Wahast";
     }
 
     ///// CAMERA
@@ -300,12 +300,12 @@ function main() {
       
     //Comandos de movimentação Jogadores
     if(keysPressed['w']){
-      if(translationP1[1] + 150 <= canvas.height - 220){
+      if(translationP1[1] + 150 <= (canvas.height - 220)){
         translationP1[1] += playerSpeed * deltaTime;
       }
     }
     if(keysPressed['s']){
-      if(translationP1[1] >= -canvas.height + 220){
+      if(translationP1[1] >= -(canvas.height - 220)){
         translationP1[1] -= playerSpeed * deltaTime;
       }  
     }
@@ -400,8 +400,8 @@ function main() {
     //limite de pontuação
     if(player1score >= limite){
       //alert("Player 1 Venceu!!!");
-      document.getElementById('pause').innerHTML = "Player 1 Venceu!!!";
-      document.getElementById('pause').style.left = '24%';
+      document.getElementById('pause').innerHTML = "Player 1 Win!!!";
+      document.getElementById('pause').style.left = '28%';
       document.getElementById('pause').style.display = "block";
       ballSpeed = 0;
       solo = false;
@@ -422,8 +422,8 @@ function main() {
     }
     if(player2score >= limite){
       // Usage!
-      document.getElementById('pause').innerHTML = "Player 2 Venceu!!!";
-      document.getElementById('pause').style.left = '24%';
+      document.getElementById('pause').innerHTML = "Player 2 Win!!!";
+      document.getElementById('pause').style.left = '28%';
       document.getElementById('pause').style.display = "block";
       ballSpeed = 0;
       solo = false;
@@ -453,13 +453,25 @@ function main() {
     document.getElementById('speed').innerHTML = "Ball Speed: " + ballSpeed;
     document.getElementById('savedspeed').innerHTML = "Players Speed:" + playerSpeed;
     document.getElementById('angle').innerHTML = "Movement Angle:" + Math.round(diagonal);
-    document.getElementById('type').innerHTML = "Single-Player: " + solo;
+    document.getElementById('type').innerHTML = "Single-Player: " + canvas.height;
     document.getElementById('pad1').innerHTML = "Pad 1 Pos:" + Math.round(translationP1[1]);
     document.getElementById('pad2').innerHTML = "Pad 2 Pos:" + Math.round(translationP2[1]);
 
     computeDrawMatrix(viewProjectionMatrix, translationP1, rotation, scale, padsVAO)
     computeDrawMatrix(viewProjectionMatrix, translationP2, rotation, scale, padsVAO)
     computeDrawMatrix(viewProjectionMatrix, ballPosition, ballRotation, [0.9,0.7,0.5], ballVAO)
+    if(ballSpeed >= 1000){
+      if((ballPosition[0] >= -40-ballSpeed*0.001 && ballPosition[0] <= -20+ballSpeed*0.001) && (ballPosition[1] >= -45 && ballPosition[1] <= 45)){
+        if(dir == 'DIR'){
+          dir = "ESQ";
+          ballPosition[0] -= 30 * deltaTime;
+        }else{
+          dir = "DIR";
+          ballPosition[0] += 30 * deltaTime;
+        }
+      }
+      computeDrawMatrix(viewProjectionMatrix, [-30,-5,-720], ballRotation, [0.9,1.6,0.5], ballVAO)
+    }
     
     // Call drawScene again next frame
     requestAnimationFrame(drawScene);
@@ -821,11 +833,15 @@ function easyMode(){
     document.querySelectorAll('.level').forEach(function(el) {
       el.style.display = 'none';
     });
+    init = false;
+    player1score = 0;
+    player2score = 0;
     document.getElementById('solo').style.display = 'none';
     document.getElementById('multi').style.display = 'none';
     document.getElementById('pause').style.display = 'none';
     document.getElementById('levelBoard').innerHTML = "Easy";
-    
+    translationP1[1] = -75;
+    translationP2[1] = -75;
     ballPosition = [-30,0,-720];
     level = 0;
     ballSpeed = baseSpeed;
@@ -833,10 +849,6 @@ function easyMode(){
     paused = false;
     playerSpeed = baseSpeed;
     diagonal = 0;
-    player1score = 0;
-    player2score = 0;
-    translationP1[1] = -75;
-    translationP2[1] = -75;
   }
 
 }
@@ -854,11 +866,15 @@ function mediumMode(){
     document.querySelectorAll('.level').forEach(function(el) {
       el.style.display = 'none';
     });
+    init = false;
+    player1score = 0;
+    player2score = 0;
     document.getElementById('solo').style.display = 'none';
     document.getElementById('multi').style.display = 'none';
     document.getElementById('pause').style.display = 'none';
     document.getElementById('levelBoard').innerHTML = "Medium";
-
+    translationP1[1] = -75;
+    translationP2[1] = -75;
     ballPosition = [-30,0,-720];
     level = 1;
     ballSpeed = baseSpeed + 50;
@@ -866,10 +882,6 @@ function mediumMode(){
     paused = false;
     playerSpeed = baseSpeed;
     diagonal = 0;
-    player1score = 0;
-    player2score = 0;
-    translationP1[1] = -75;
-    translationP2[1] = -75;
   }
 }
 
@@ -883,29 +895,30 @@ function hardMode(){
     document.getElementById('multi').style.display = 'none';
     document.getElementById('pause').style.display = 'none';  
   }else{
+    player1score = 0;
+    player2score = 0;
     document.querySelectorAll('.level').forEach(function(el) {
       el.style.display = 'none';
     });
-    init = false;
+    init = false
     document.getElementById('solo').style.display = 'none';
     document.getElementById('multi').style.display = 'none';
     document.getElementById('pause').style.display = 'none';
     document.getElementById('levelBoard').innerHTML = "Hard";
-    level = 2;
+    translationP1[1] = -75;
+    translationP2[1] = -75;
     ballPosition = [-30,0,-720];
-    ballSpeed = baseSpeed + 100;
+    ballSpeed = baseSpeed + 150;
+    level = 2;
     running = true;
     paused = false;
     playerSpeed = baseSpeed;
-    player1score = 0;
-    player2score = 0;
     diagonal = 0;
-    translationP1[1] = -75;
-    translationP2[1] = -75;
+    
   }
 }
 
-function inite(){
+ function inite(){
   running = false;
   init = true;
   paused = false;
@@ -913,7 +926,8 @@ function inite(){
   translationP1[1] = -75;
   translationP2[1] = -75;
   ballPosition = [-30,0,-720];
-  level = -1;
+   player1score = 0;
+    player2score = 0;
   document.querySelectorAll('.level').forEach(function(el) {
     el.style.display = 'none';
   });
@@ -924,7 +938,7 @@ function inite(){
   
   document.getElementById('pause').style.left = '40%';
   document.getElementById('pause').style.display = "block";
-  document.getElementById('levelBoard').innerHTML = "Pong by Douglas.w";
+  document.getElementById('levelBoard').innerHTML = "Pong by Douglas Wahast.";
 }
 
 // sleep time expects milliseconds
